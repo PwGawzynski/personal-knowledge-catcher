@@ -1,0 +1,36 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"     # REST + dashboard
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY}  # włącz prostą autoryzację
+    volumes:
+      - /mnt/storage/qdrant_storage:/qdrant/storage
+      - /mnt/storage/qdrant_snapshots:/qdrant/snapshots
+    networks:
+      - qdrant_network
+
+  qdrant-init:
+    image: alpine:3.20
+    container_name: qdrant-init
+    depends_on:
+      - qdrant
+    command: sh -c "apk add --no-cache bash curl >/dev/null && bash /workdir/scripts/qdrant-init.sh"
+    volumes:
+      - ./:/workdir:ro
+      - qdrant_init_state:/state
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - qdrant_network
+    restart: on-failure:3
+
+networks:
+  qdrant_network:
+    name: qdrant_network
+    driver: bridge
+
+volumes:
+  qdrant_init_state:

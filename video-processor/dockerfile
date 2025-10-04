@@ -1,0 +1,13 @@
+FROM python:3.11-slim
+
+# ffmpeg dla ekstrakcji/chunkowania audio, curl jako pomoc
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/dep
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+WORKDIR /workspace
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

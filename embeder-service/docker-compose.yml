@@ -1,0 +1,35 @@
+# docker-compose.yml
+version: "3.9"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-dev
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8081 --reload --log-level debug
+    ports:
+      - "8081:8081"
+    volumes:
+      - .:/app:cached
+    env_file:
+      - ../.env
+      - ./.env
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - redis_default
+      - qdrant_network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+networks:
+  redis_default:
+    external: true
+  qdrant_network:
+    external: true

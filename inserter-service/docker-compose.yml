@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  inserter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inserter-service
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8082 --reload --log-level debug
+    env_file:
+      - ../.env
+      - ./.env
+    volumes:
+      - .:/app
+    networks:
+      - redis_default
+      - qdrant_network
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+
+networks:
+  redis_default:
+    external: true
+  qdrant_network:
+    external: true
+
+
+

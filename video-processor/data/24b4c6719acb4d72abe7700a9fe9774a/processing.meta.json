@@ -1,0 +1,29 @@
+{
+  "job_id": "24b4c6719acb4d72abe7700a9fe9774a",
+  "video_id": "sQ56ve39l2I",
+  "source_url": "https://www.youtube.com/watch?v=sQ56ve39l2I",
+  "stages": {
+    "captions": {
+      "success": true,
+      "seconds": 19.13274335861206,
+      "selected": {
+        "lang": "en-orig",
+        "format": "vtt",
+        "chain": "vtt/json3/srv3/ttml/srt/best"
+      }
+    },
+    "whisper": null
+  },
+  "text_processing": {
+    "method": "captions",
+    "selected_lang": "en-orig",
+    "captions_file": "/workspace/data/24b4c6719acb4d72abe7700a9fe9774a/en.en-orig.vtt",
+    "chunks": 21,
+    "enqueued": 21,
+    "queue": "dev:queue:ingest:v1",
+    "max_text_length": 500,
+    "errors": []
+  },
+  "success": true,
+  "total_seconds": 19.191345930099487
+}

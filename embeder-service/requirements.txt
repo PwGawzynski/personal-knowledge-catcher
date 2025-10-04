@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+redis
+pydantic
+sentence-transformers
+torch --index-url https://download.pytorch.org/whl/cu121
+torchvision --index-url https://download.pytorch.org/whl/cu121
+torchaudio --index-url https://download.pytorch.org/whl/cu121

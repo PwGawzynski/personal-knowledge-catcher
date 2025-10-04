@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+yt-dlp
+faster-whisper
+pydantic
+pydantic-settings
+watchfiles
+redis
+pysubs2

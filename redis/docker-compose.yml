@@ -1,0 +1,48 @@
+services:
+  redis:
+    image: redis:7-alpine
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --requirepass ${REDIS_PASSWORD}
+      --protected-mode yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - /mnt/storage/redis/data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} PING | grep PONG"]
+      interval: 3s
+      timeout: 2s
+      retries: 20
+
+  # Proste GUI do podglądu kolejek/streamów
+  insight:
+    image: redis/redisinsight:latest
+    depends_on:
+      - redis
+    ports:
+      - "5540:5540"
+
+  # Jednorazowa inicjalizacja kolejek i grup
+  init-queues:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM redis:7-alpine
+        COPY ./init /init
+        RUN chmod +x /init/init.sh
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_ENV: ${REDIS_ENV}
+      LIST_MAXLEN: ${LIST_MAXLEN}
+    entrypoint: ["/bin/sh","-c","/init/init.sh"]
+
+volumes:
+  redis-data:
